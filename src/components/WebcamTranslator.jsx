@@ -44,7 +44,7 @@ export default function WebcamTranslator() {
             
             if (hand.length > 0) {
               const GE = new fp.GestureEstimator(Gestures);
-              const gesture = await GE.estimate(hand[0].landmarks, 8.5); // Minimum confidence 8.5 out of 10
+              const gesture = await GE.estimate(hand[0].landmarks, 7.5); // Minimum confidence 7.5 for faster detection
               
               if (gesture.gestures !== undefined && gesture.gestures.length > 0) {
                 // Find gesture with highest confidence
@@ -87,7 +87,7 @@ export default function WebcamTranslator() {
     if (detectedLetter) {
         const timeout = setTimeout(() => {
             setHistoryText(prev => prev + detectedLetter);
-        }, 1500); // Must hold sign for 1.5 second to register
+        }, 800); // Only needs 0.8 seconds to register now
         return () => clearTimeout(timeout);
     }
   }, [detectedLetter]);
@@ -104,7 +104,7 @@ export default function WebcamTranslator() {
            🔄 Ganti Kamera
         </button>
       </div>
-      <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>Mengenali Isyarat Abjad (PoC): A, B, C, L, V. Tahan posisi tangan selama 1.5 detik untuk mengetik.</p>
+      <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>Mengenali Lebih Banyak Isyarat Abjad Statis. Tahan posisi tangan selama 0.8 detik untuk mengetik.</p>
       
       {modelLoading && <div style={{ color: 'var(--primary-color)', padding: '2rem', fontWeight: 'bold' }}>Memuat Model AI... mohon tunggu...</div>}
       
