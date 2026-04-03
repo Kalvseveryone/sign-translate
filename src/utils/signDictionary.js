@@ -30,3 +30,55 @@ export const signDictionary = {
 
 // Also we should provide a fallback image or text if a letter is not found
 export const fallbackSign = "https://dummyimage.com/200x200/ffffff/000000&text=N/A";
+
+// Data Pembelajaran BISINDO (Duolingo Style)
+export const learningLessons = [
+  {
+    id: 1,
+    title: "Mengenal Huruf A - E",
+    questions: [
+      {
+        type: "multiple_choice",
+        questionText: "Huruf apakah ini?",
+        image: "https://www.lifeprint.com/asl101/fingerspelling/abc-gifs/a.gif",
+        options: ["A", "B", "C", "D"],
+        correctAnswer: "A"
+      },
+      {
+        type: "multiple_choice",
+        questionText: "Huruf apakah ini?",
+        image: "https://www.lifeprint.com/asl101/fingerspelling/abc-gifs/b.gif",
+        options: ["E", "B", "A", "C"],
+        correctAnswer: "B"
+      },
+      {
+        type: "multiple_choice",
+        questionText: "Manakah isyarat untuk huruf 'C'?",
+        // We can just use text or image for options. Let's stick to guessing the letter from an image for simplicity.
+        image: "https://www.lifeprint.com/asl101/fingerspelling/abc-gifs/c.gif",
+        options: ["C", "D", "A", "E"],
+        correctAnswer: "C"
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: "Mengenal Huruf F - J",
+    questions: [
+      {
+        type: "multiple_choice",
+        questionText: "Huruf apakah ini?",
+        image: "https://www.lifeprint.com/asl101/fingerspelling/abc-gifs/f.gif",
+        options: ["F", "G", "H", "I"],
+        correctAnswer: "F"
+      },
+      {
+        type: "multiple_choice",
+        questionText: "Huruf apakah ini?",
+        image: "https://www.lifeprint.com/asl101/fingerspelling/abc-gifs/g.gif",
+        options: ["H", "I", "G", "J"],
+        correctAnswer: "G"
+      }
+    ]
+  }
+];

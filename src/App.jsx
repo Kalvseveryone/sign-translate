@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import TranslatorInput from './components/TranslatorInput';
 import SignPlayer from './components/SignPlayer';
 import WebcamTranslator from './components/WebcamTranslator';
+import LearnModule from './components/LearnModule';
 
 function App() {
   const [activeTab, setActiveTab] = useState('textToSign'); // 'textToSign' | 'signToText'
@@ -61,9 +62,15 @@ function App() {
         >
           Kamera Web ➔ Teks
         </button>
+        <button
+          className={`tab-button ${activeTab === 'learn' ? 'active' : ''}`}
+          onClick={() => setActiveTab('learn')}
+        >
+          Belajar BISINDO
+        </button>
       </div>
 
-      {activeTab === 'textToSign' ? (
+      {activeTab === 'textToSign' && (
         <>
           <TranslatorInput
             text={text}
@@ -79,8 +86,14 @@ function App() {
             currentIndex={currentIndex}
           />
         </>
-      ) : (
+      )}
+      
+      {activeTab === 'signToText' && (
         <WebcamTranslator />
+      )}
+
+      {activeTab === 'learn' && (
+        <LearnModule />
       )}
 
     </div>

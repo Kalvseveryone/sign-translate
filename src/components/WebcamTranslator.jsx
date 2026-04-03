@@ -12,6 +12,7 @@ export default function WebcamTranslator() {
   const [modelLoading, setModelLoading] = useState(true);
   const [detectedLetter, setDetectedLetter] = useState(null);
   const [historyText, setHistoryText] = useState("");
+  const [facingMode, setFacingMode] = useState("user");
 
   const requestRef = useRef();
 
@@ -91,16 +92,26 @@ export default function WebcamTranslator() {
     }
   }, [detectedLetter]);
 
+  const toggleCamera = () => {
+    setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
+  };
+
   return (
     <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-      <h2 style={{ textAlign: 'center', color: 'var(--primary-color)' }}>Translasi Kamera ke Teks</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+        <h2 style={{ color: 'var(--text-title)', margin: 0 }}>Translasi Kamera</h2>
+        <button className="btn-secondary" onClick={toggleCamera} style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+           🔄 Ganti Kamera
+        </button>
+      </div>
       <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>Mengenali Isyarat Abjad (PoC): A, B, C, L, V. Tahan posisi tangan selama 1.5 detik untuk mengetik.</p>
       
-      {modelLoading && <div style={{ color: 'var(--primary-color)', padding: '2rem' }}>Memuat Model AI TensorFlow.js... mohon tunggu...</div>}
+      {modelLoading && <div style={{ color: 'var(--primary-color)', padding: '2rem', fontWeight: 'bold' }}>Memuat Model AI... mohon tunggu...</div>}
       
       <div style={{ position: 'relative', width: '100%', maxWidth: '640px', background: '#000', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--surface-border)' }}>
         <Webcam
           ref={webcamRef}
+          videoConstraints={{ facingMode }}
           style={{
             position: 'absolute',
             marginLeft: 'auto',
@@ -128,8 +139,8 @@ export default function WebcamTranslator() {
           }}
         />
         {detectedLetter && (
-          <div style={{ position: 'absolute', top: 20, left: 20, background: 'rgba(0,0,0,0.7)', color: 'var(--primary-color)', padding: '10px 20px', borderRadius: '10px', fontSize: '2rem', fontWeight: 'bold', zIndex: 11 }}>
-            Terdeteksi: {detectedLetter}
+          <div style={{ position: 'absolute', top: 20, left: 20, background: 'var(--secondary-color)', color: '#fff', padding: '10px 20px', borderRadius: '12px', fontSize: '2rem', fontWeight: 'bold', zIndex: 11, boxShadow: '0 4px 0 var(--secondary-dark)' }}>
+            {detectedLetter}
           </div>
         )}
       </div>

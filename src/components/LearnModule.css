@@ -1,0 +1,260 @@
+.learn-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Level Selection Menu */
+.lessons-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.lesson-card {
+  background: white;
+  border: 2px solid #e5e5e5;
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 0 #e5e5e5;
+}
+
+.lesson-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #e5e5e5;
+  border-color: #58cc02;
+}
+
+.lesson-card:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 #e5e5e5;
+}
+
+.lesson-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #4b4b4b;
+  margin: 0;
+}
+
+.lesson-start-btn {
+  background-color: #58cc02;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #58a700;
+}
+
+/* Quiz Active Screen */
+.quiz-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #afafaf;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.progress-bar-container {
+  flex: 1;
+  height: 16px;
+  background-color: #e5e5e5;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: #58cc02;
+  border-radius: 8px;
+  transition: width 0.3s ease;
+}
+
+.hearts {
+  color: #ff4b4b;
+  font-weight: bold;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.question-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #3c3c3c;
+  margin-bottom: 1.5rem;
+}
+
+.sign-image-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.sign-image {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  border-radius: 16px;
+  border: 2px solid #e5e5e5;
+  padding: 10px;
+  background: white;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.option-btn {
+  background: white;
+  border: 2px solid #e5e5e5;
+  border-radius: 16px;
+  padding: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4b4b4b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 0 #e5e5e5;
+}
+
+.option-btn:hover {
+  background: #f7f7f7;
+}
+
+.option-btn.selected {
+  border-color: #84d8ff;
+  background-color: #ddf4ff;
+  color: #1cb0f6;
+  box-shadow: 0 4px 0 #84d8ff;
+}
+
+.option-btn.correct {
+  border-color: #58a700;
+  background-color: #d7ffb8;
+  color: #58a700;
+  box-shadow: 0 4px 0 #58a700;
+}
+
+.option-btn.wrong {
+  border-color: #ea2b2b;
+  background-color: #ffdfe0;
+  color: #ea2b2b;
+  box-shadow: 0 4px 0 #ea2b2b;
+}
+
+.action-footer {
+  margin-top: auto;
+  border-top: 2px solid #e5e5e5;
+  padding-top: 1rem;
+}
+
+.check-btn {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 16px;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.check-btn:disabled {
+  background-color: #e5e5e5;
+  color: #afafaf;
+  cursor: not-allowed;
+}
+
+.check-btn.active {
+  background-color: #58cc02;
+  color: white;
+  box-shadow: 0 4px 0 #58a700;
+}
+
+.check-btn.next {
+  background-color: #58cc02;
+  color: white;
+  box-shadow: 0 4px 0 #58a700;
+}
+
+.check-btn.retry {
+  background-color: #ff4b4b;
+  color: white;
+  box-shadow: 0 4px 0 #ea2b2b;
+}
+
+/* Result Overlay */
+.feedback-container {
+  padding: 1rem;
+  border-radius: 16px;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.feedback-container.correct {
+  background-color: #d7ffb8;
+  color: #58a700;
+}
+
+.feedback-container.wrong {
+  background-color: #ffdfe0;
+  color: #ea2b2b;
+}
+
+/* Lesson Complete Screen */
+.lesson-complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1.5rem;
+  padding: 3rem 0;
+}
+
+.lesson-complete h2 {
+  color: #fce83a;
+  font-size: 2rem;
+  text-shadow: 0 2px 0 #d9c000;
+}
+
+.finish-btn {
+  background-color: #58cc02;
+  color: white;
+  border: none;
+  padding: 1rem 3rem;
+  border-radius: 16px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  box-shadow: 0 4px 0 #58a700;
+  cursor: pointer;
+}
