@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { learningLessons } from '../utils/signDictionary';
+import CameraQuiz from './CameraQuiz';
 import './LearnModule.css';
 
 const LearnModule = () => {
@@ -80,6 +81,15 @@ const LearnModule = () => {
     }
   };
 
+  const handleCameraSuccess = () => {
+    setFeedback('correct');
+  };
+
+  const handleCameraSkip = () => {
+    setFeedback('wrong');
+    setHearts((prev) => Math.max(0, prev - 1));
+  };
+
   const isGameOver = hearts === 0;
 
   if (isGameOver) {
@@ -107,35 +117,45 @@ const LearnModule = () => {
       {/* Question */}
       <div className="question-text">{currentQuestion.questionText}</div>
 
-      <div className="sign-image-container">
-        <img src={currentQuestion.image} alt="Sign" className="sign-image" />
-      </div>
+      {currentQuestion.type === 'camera_gesture' ? (
+        <CameraQuiz 
+           targetGesture={currentQuestion.targetGesture} 
+           onSuccess={handleCameraSuccess}
+           onSkip={handleCameraSkip}
+        />
+      ) : (
+        <>
+          <div className="sign-image-container">
+            <img src={currentQuestion.image} alt="Sign" className="sign-image" />
+          </div>
 
-      {/* Options */}
-      <div className="options-grid">
-        {currentQuestion.options.map((option, index) => {
-          let btnClass = "option-btn";
-          if (selectedOption === option) {
-            btnClass += " selected";
-            if (feedback === 'correct') btnClass += " correct";
-            if (feedback === 'wrong') btnClass += " wrong";
-          } else if (feedback === 'correct' && option === currentQuestion.correctAnswer) {
-             // highlight correct answer if they got it wrong
-             btnClass += " correct";
-          }
-          
-          return (
-            <button
-              key={index}
-              className={btnClass}
-              onClick={() => handleOptionClick(option)}
-              disabled={!!feedback}
-            >
-              {option}
-            </button>
-          );
-        })}
-      </div>
+          {/* Options */}
+          <div className="options-grid">
+            {currentQuestion.options.map((option, index) => {
+              let btnClass = "option-btn";
+              if (selectedOption === option) {
+                btnClass += " selected";
+                if (feedback === 'correct') btnClass += " correct";
+                if (feedback === 'wrong') btnClass += " wrong";
+              } else if (feedback === 'correct' && option === currentQuestion.correctAnswer) {
+                 // highlight correct answer if they got it wrong
+                 btnClass += " correct";
+              }
+              
+              return (
+                <button
+                  key={index}
+                  className={btnClass}
+                  onClick={() => handleOptionClick(option)}
+                  disabled={!!feedback}
+                >
+                  {option}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
 
       <div className="action-footer">
         {feedback && (
@@ -146,9 +166,9 @@ const LearnModule = () => {
         )}
 
         <button
-          className={`check-btn ${!selectedOption ? '' : feedback === 'correct' ? 'next' : feedback === 'wrong' ? 'retry' : 'active'}`}
+          className={`check-btn ${(!selectedOption && currentQuestion.type !== 'camera_gesture') ? '' : feedback === 'correct' ? 'next' : feedback === 'wrong' ? 'retry' : 'active'}`}
           onClick={handleCheck}
-          disabled={!selectedOption}
+          disabled={!selectedOption && currentQuestion.type !== 'camera_gesture'}
         >
           {feedback ? 'Lanjut' : 'Periksa'}
         </button>

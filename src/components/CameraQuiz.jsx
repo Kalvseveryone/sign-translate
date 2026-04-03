@@ -6,23 +6,25 @@ import * as fp from 'fingerpose';
 import { Gestures } from '../utils/GestureDefinitions';
 import { drawHand } from '../utils/canvasHelper';
 
-export default function WebcamTranslator() {
+export default function CameraQuiz({ targetGesture, onSuccess, onSkip }) {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
 
   const [modelLoading, setModelLoading] = useState(true);
   const [detectedLetter, setDetectedLetter] = useState(null);
-  const [historyText, setHistoryText] = useState("");
   const [facingMode, setFacingMode] = useState("user");
 
   const requestRef = useRef();
 
   useEffect(() => {
+    // Reset when target changes
+    setDetectedLetter(null);
+  }, [targetGesture]);
+
+  useEffect(() => {
     const runHandpose = async () => {
-      // Ensure backend is ready
       await tf.ready();
       const net = await handpose.load();
-      console.log('Handpose model loaded.');
       setModelLoading(false);
       
       const detect = async () => {
@@ -45,10 +47,9 @@ export default function WebcamTranslator() {
             
             if (hand.length > 0) {
               const GE = new fp.GestureEstimator(Gestures);
-              const gesture = await GE.estimate(hand[0].landmarks, 7.5); // Minimum confidence 7.5 for faster detection
+              const gesture = await GE.estimate(hand[0].landmarks, 7.5);
               
               if (gesture.gestures !== undefined && gesture.gestures.length > 0) {
-                // Find gesture with highest confidence
                 const confidence = gesture.gestures.map((p) => p.score);
                 const maxConfidence = confidence.indexOf(Math.max.apply(null, confidence));
                 const letter = gesture.gestures[maxConfidence].name;
@@ -57,19 +58,17 @@ export default function WebcamTranslator() {
                 setDetectedLetter(null);
               }
 
-              // Draw hand outline
               const ctx = canvasRef.current.getContext("2d");
               ctx.clearRect(0, 0, videoWidth, videoHeight);
               drawHand(hand, ctx);
             } else {
                setDetectedLetter(null);
-               if(canvasRef.current){
-                  const ctx = canvasRef.current.getContext("2d");
-                  ctx.clearRect(0, 0, videoWidth, videoHeight);
-               }
+               const ctx = canvasRef.current.getContext("2d");
+               ctx.clearRect(0, 0, videoWidth, videoHeight);
             }
           }
         }
+        // only keep looping if not unmounted
         requestRef.current = requestAnimationFrame(detect);
       };
       
@@ -83,33 +82,32 @@ export default function WebcamTranslator() {
     };
   }, []);
 
-  // Simple debouncing for adding letters to text
+  // Validation logic
   useEffect(() => {
-    if (detectedLetter) {
+    if (detectedLetter === targetGesture) {
         const timeout = setTimeout(() => {
-            setHistoryText(prev => prev + detectedLetter);
-        }, 800); // Only needs 0.8 seconds to register now
+            // Holds the sign for 1.2s to confirm success
+            onSuccess();
+        }, 1200); 
         return () => clearTimeout(timeout);
     }
-  }, [detectedLetter]);
+  }, [detectedLetter, targetGesture, onSuccess]);
 
   const toggleCamera = () => {
     setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
   };
 
   return (
-    <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-        <h2 style={{ color: 'var(--text-title)', margin: 0 }}>Translasi Kamera</h2>
-        <button className="btn-secondary" onClick={toggleCamera} style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-           🔄 Ganti Kamera
-        </button>
-      </div>
-      <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>Mengenali Lebih Banyak Isyarat Abjad Statis. Tahan posisi tangan selama 0.8 detik untuk mengetik.</p>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', marginBottom: '2rem' }}>
       
-      {modelLoading && <div style={{ color: 'var(--primary-color)', padding: '2rem', fontWeight: 'bold' }}>Memuat Model AI... mohon tunggu...</div>}
+      {modelLoading && (
+        <div style={{ background: '#ddf4ff', color: '#1cb0f6', padding: '1rem', borderRadius: '12px', fontWeight: 'bold', marginBottom: '1rem', border: '2px solid #84d8ff' }}>
+           ⏳ Memuat AI Kamera (TensorFlow)...
+        </div>
+      )}
       
-      <div style={{ position: 'relative', width: '100%', maxWidth: '640px', background: '#000', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--surface-border)' }}>
+      <div style={{ position: 'relative', width: '100%', maxWidth: '400px', background: '#000', borderRadius: '16px', overflow: 'hidden', border: '4px solid var(--surface-border)', boxShadow: 'var(--shadow-md)' }}>
+        
         <Webcam
           ref={webcamRef}
           videoConstraints={{ facingMode }}
@@ -137,41 +135,39 @@ export default function WebcamTranslator() {
             zindex: 10,
             width: '100%',
             height: 'auto',
+            minHeight: '250px' // Ensure canvas has height before video loads
           }}
         />
+        
+        <button 
+           onClick={toggleCamera} 
+           style={{ position: 'absolute', top: 10, right: 10, zIndex: 12, background: 'rgba(255,255,255,0.8)', border: 'none', borderRadius: '8px', padding: '8px 12px', fontWeight: 'bold', cursor: 'pointer' }}
+        >
+          🔄
+        </button>
+
         {detectedLetter && (
-          <div style={{ position: 'absolute', top: 20, left: 20, background: 'var(--secondary-color)', color: '#fff', padding: '10px 20px', borderRadius: '12px', fontSize: '2rem', fontWeight: 'bold', zIndex: 11, boxShadow: '0 4px 0 var(--secondary-dark)' }}>
+          <div style={{ 
+              position: 'absolute', 
+              top: 10, 
+              left: 10, 
+              background: detectedLetter === targetGesture ? 'var(--secondary-color)' : 'rgba(0,0,0,0.7)', 
+              color: '#fff', 
+              padding: '6px 12px', 
+              borderRadius: '8px', 
+              fontSize: '1.2rem', 
+              fontWeight: 'bold', 
+              zIndex: 11 
+          }}>
             {detectedLetter}
           </div>
         )}
       </div>
 
-      <div style={{ width: '100%', marginTop: '1rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-            <label style={{ color: 'var(--text-muted)' }}>Hasil Translasi:</label>
-            <button 
-               className="btn-secondary" 
-               style={{ padding: '0.4rem 1rem', fontSize: '0.9rem' }} 
-               onClick={() => setHistoryText(prev => prev + " ")}
-            >
-                Spasi
-            </button>
-            <button 
-               className="btn-secondary" 
-               style={{ padding: '0.4rem 1rem', fontSize: '0.9rem' }} 
-               onClick={() => setHistoryText("")}
-            >
-                Clear
-            </button>
-        </div>
-        <textarea
-          className="text-input"
-          style={{ minHeight: '80px' }}
-          readOnly
-          value={historyText}
-          placeholder="..."
-        />
-      </div>
+      <button className="btn-secondary" style={{ marginTop: '1.5rem', color: '#ea2b2b', borderColor: '#e5e5e5' }} onClick={onSkip}>
+        Lewati (Ambil Nyawa)
+      </button>
+
     </div>
   );
 }

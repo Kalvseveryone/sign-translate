@@ -80,5 +80,26 @@ export const learningLessons = [
         correctAnswer: "G"
       }
     ]
+  },
+  {
+    id: 3,
+    title: "Praktek Langsung: Huruf Dasar",
+    questions: [
+      {
+        type: "camera_gesture",
+        questionText: "Peragakan huruf 'A' di depan kamera",
+        targetGesture: "A"
+      },
+      {
+        type: "camera_gesture",
+        questionText: "Sekarang, coba huruf 'B'",
+        targetGesture: "B"
+      },
+      {
+        type: "camera_gesture",
+        questionText: "Luar biasa! Bagaimana dengan huruf 'C'?",
+        targetGesture: "C"
+      }
+    ]
   }
 ];
